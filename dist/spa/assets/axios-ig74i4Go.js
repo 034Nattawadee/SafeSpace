@@ -1,0 +1,1 @@
+import{t as e}from"./wrappers-Dfvzj6n2.js";import{t}from"./axios-B0Z-2SsZ.js";var n=t.create({baseURL:void 0}),r=e(({app:e})=>{e.config.globalProperties.$axios=t,e.config.globalProperties.$api=n});export{n as api,r as default};
