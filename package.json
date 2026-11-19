@@ -38,8 +38,8 @@
   "engines": {
     "node": ">= 26 || ^24 || ^22.12"
   },
-  "productName": "Safespace",
   "allowScripts": {
     "@parcel/watcher@2.6.0": true
-  }
+  },
+  "productName": "Safespace"
 }

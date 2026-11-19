@@ -13,8 +13,22 @@
         </div>
       </div>
       <div class="row q-gutter-xs">
-        <q-btn flat round dense icon="edit" color="primary" @click="$emit('edit', mood)" />
-        <q-btn flat round dense icon="delete" color="negative" @click="$emit('delete', mood.id)" />
+        <q-btn
+          flat
+          round
+          dense
+          icon="edit"
+          color="primary"
+          @click="$emit('edit', mood)"
+        />
+        <q-btn
+          flat
+          round
+          dense
+          icon="delete"
+          color="negative"
+          @click="$emit('delete', mood.id)"
+        />
       </div>
     </q-card-section>
   </q-card>

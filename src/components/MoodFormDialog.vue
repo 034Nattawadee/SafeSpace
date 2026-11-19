@@ -2,7 +2,9 @@
   <q-dialog v-model="model" persistent>
     <q-card style="min-width: 360px; max-width: 480px; width: 100%">
       <q-card-section class="row items-center justify-between">
-        <div class="text-h6">{{ initialData ? 'แก้ไขบันทึกอารมณ์' : 'บันทึกอารมณ์ใหม่' }}</div>
+        <div class="text-h6">{{
+          initialData ? 'แก้ไขบันทึกอารมณ์' : 'บันทึกอารมณ์ใหม่'
+        }}</div>
         <q-btn flat round dense icon="close" @click="closeDialog" />
       </q-card-section>
 

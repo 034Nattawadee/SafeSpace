@@ -1,8 +1,12 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
 
+const baseURL =
+  import.meta.env.VITE_API_BASE_URL ||
+  'https://6aff43377fc363ccff090947.mockapi.io/SafeSpace'
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL
+  baseURL
 })
 
 export const useMoodStore = defineStore('mood', {
