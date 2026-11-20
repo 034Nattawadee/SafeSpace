@@ -89,7 +89,11 @@ onMounted(() => {
   moodStore.fetchMoods()
 })
 const openCreateDialog = () => {
-  selectedMood.value = null
+  selectedMoodItem.value = {
+    mood: '',
+    note: '',
+    title: ''
+  }
   dialogOpen.value = true
 }
 const openEditDialog = item => {
