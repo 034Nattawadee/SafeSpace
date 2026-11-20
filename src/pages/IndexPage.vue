@@ -94,7 +94,7 @@ const openCreateDialog = () => {
 }
 
 const openEditDialog = item => {
-  selectedMood.value = item
+  selectedMood.value = item ?? null
   dialogOpen.value = true
 }
 

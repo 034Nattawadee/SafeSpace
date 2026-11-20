@@ -64,7 +64,7 @@ const form = ref({
 })
 
 const model = computed({
-  get: () => props.modelValue ?? {},
+  get: () => props.modelValue ?? { mood: '', note: '' },
   set: val => emit('update:modelValue', val)
 })
 
