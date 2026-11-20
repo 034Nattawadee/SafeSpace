@@ -89,30 +89,31 @@ onMounted(() => {
   moodStore.fetchMoods()
 })
 const openCreateDialog = () => {
-  selectedMood.value = {
-    mood: '',
-    note: ''
-  }
-  dialogVisible.value = true
+  selectedMood.value = null
+  dialogOpen.value = true
 }
+
 const openEditDialog = item => {
   selectedMood.value = item
   dialogOpen.value = true
 }
+
 const handleSaveMood = async formData => {
+  const isEditing = Boolean(selectedMood.value?.id)
   let success = false
-  if (selectedMood.value) {
+
+  if (isEditing) {
     success = await moodStore.updateMood(selectedMood.value.id, formData)
   } else {
     success = await moodStore.addMood(formData)
   }
+
   if (success) {
     dialogOpen.value = false
+    selectedMood.value = null
     $q.notify({
       type: 'positive',
-      message: selectedMood.value
-        ? 'อัปเดตบันทึกเรียบร้อยแล้ว'
-        : 'บันทึกความรู้สึกเรียบร้อยแล้ว'
+      message: isEditing ? 'อัปเดตบันทึกเรียบร้อยแล้ว' : 'บันทึกความรู้สึกเรียบร้อยแล้ว'
     })
   } else {
     $q.notify({
