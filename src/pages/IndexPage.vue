@@ -60,15 +60,14 @@
       <MoodCard
         v-for="item in moodStore.moodList"
         :key="item.id"
-        :item="item"
+        :mood="item"
         @edit="openEditDialog"
         @delete="confirmDelete"
       />
     </div>
     <MoodFormDialog
       v-model="dialogOpen"
-      :edit-data="selectedMood"
-      :loading="moodStore.loading"
+      :initial-data="selectedMood"
       @save="handleSaveMood"
     />
   </q-page>
