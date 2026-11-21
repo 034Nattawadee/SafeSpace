@@ -1,13 +1,5 @@
 import { defineStore } from 'pinia'
-import axios from 'axios'
-
-const baseURL =
-  import.meta.env.VITE_API_BASE_URL ||
-  'https://6aff43377fc363ccff090947.mockapi.io/SafeSpace'
-
-const api = axios.create({
-  baseURL
-})
+import supabase from '../boot/supabase'
 
 export const useMoodStore = defineStore('mood', {
   state: () => ({
@@ -20,17 +12,23 @@ export const useMoodStore = defineStore('mood', {
     async fetchMoods() {
       this.loading = true
       this.error = null
-      try {
-        const res = await api.get('/moods')
-        const rawList = Array.isArray(res.data)
-          ? res.data
-          : Array.isArray(res.data?.data)
-            ? res.data.data
-            : []
 
-        this.moodList = [...rawList].sort(
-          (a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
-        )
+      try {
+        const { data: userData, error: userError } =
+          await supabase.auth.getUser()
+
+        if (userError) throw userError
+        if (!userData.user) throw new Error('กรุณาเข้าสู่ระบบ')
+
+        const { data, error } = await supabase
+          .from('moods')
+          .select('*')
+          .eq('user_id', userData.user.id)
+          .order('created_at', { ascending: false })
+
+        if (error) throw error
+
+        this.moodList = data || []
       } catch (err) {
         this.error = 'ไม่สามารถโหลดข้อมูลได้ กรุณาลองใหม่อีกครั้ง'
         console.error('fetchMoods error:', err)
@@ -42,13 +40,29 @@ export const useMoodStore = defineStore('mood', {
     async addMood(payload) {
       this.loading = true
       this.error = null
+
       try {
+        const { data: userData, error: userError } =
+          await supabase.auth.getUser()
+
+        if (userError) throw userError
+        if (!userData.user) throw new Error('กรุณาเข้าสู่ระบบ')
+
         const newData = {
-          ...payload,
-          createdAt: new Date().toISOString()
+          mood: payload.mood,
+          note: payload.note || '',
+          user_id: userData.user.id
         }
-        const res = await api.post('/moods', newData)
-        this.moodList.unshift(res.data)
+
+        const { data, error } = await supabase
+          .from('moods')
+          .insert(newData)
+          .select()
+          .single()
+
+        if (error) throw error
+
+        this.moodList.unshift(data)
         return true
       } catch (err) {
         this.error = 'บันทึกข้อมูลไม่สำเร็จ'
@@ -62,12 +76,28 @@ export const useMoodStore = defineStore('mood', {
     async updateMood(id, payload) {
       this.loading = true
       this.error = null
+
       try {
-        const res = await api.put(`/moods/${id}`, payload)
-        const index = this.moodList.findIndex(item => item.id === id)
-        if (index !== -1) {
-          this.moodList[index] = res.data
+        const updateData = {
+          mood: payload.mood,
+          note: payload.note || ''
         }
+
+        const { data, error } = await supabase
+          .from('moods')
+          .update(updateData)
+          .eq('id', id)
+          .select()
+          .single()
+
+        if (error) throw error
+
+        const index = this.moodList.findIndex(item => item.id === id)
+
+        if (index !== -1) {
+          this.moodList[index] = data
+        }
+
         return true
       } catch (err) {
         this.error = 'แก้ไขข้อมูลไม่สำเร็จ'
@@ -81,9 +111,14 @@ export const useMoodStore = defineStore('mood', {
     async deleteMood(id) {
       this.loading = true
       this.error = null
+
       try {
-        await api.delete(`/moods/${id}`)
+        const { error } = await supabase.from('moods').delete().eq('id', id)
+
+        if (error) throw error
+
         this.moodList = this.moodList.filter(item => item.id !== id)
+
         return true
       } catch (err) {
         this.error = 'ลบข้อมูลไม่สำเร็จ'

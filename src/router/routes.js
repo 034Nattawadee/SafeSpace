@@ -1,7 +1,14 @@
 const routes = [
   {
     path: '/',
+    name: 'login',
+    component: () => import('@/pages/LoginPage.vue')
+  },
+  {
+    path: '/home',
+    name: 'main',
     component: () => import('@/layouts/MainLayout.vue'),
+    meta: { requiresAuth: true },
     children: [
       {
         path: '',
@@ -20,13 +27,9 @@ const routes = [
       }
     ]
   },
-
-  // Always leave this as last one,
-  // but you can also remove it
   {
     path: '/:catchAll(.*)*',
     component: () => import('@/pages/ErrorNotFound.vue')
   }
 ]
-
 export default routes
